@@ -1,0 +1,31 @@
+{
+  "name": "whatsapp-bot",
+  "version": "1.0.0",
+  "description": "Selenium based chrome bot for interacting with Whatsapp web.",
+  "main": "main.js",
+  "dependencies": {
+    "selenium-webdriver": "^4.0.0-alpha.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrishab/Whatsapp-Bot.git"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot",
+    "selenium",
+    "chrome",
+    "whatsapp",
+    "bot"
+  ],
+  "author": "Rishab Manocha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrishab/Whatsapp-Bot/issues"
+  },
+  "homepage": "https://github.com/mrishab/Whatsapp-Bot#readme"
+}
