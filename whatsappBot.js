@@ -56,23 +56,30 @@ class WhatsappBot {
     }
 
     async _handleErrorOnLoad(){
+        // Check if the Progress Bar is present.
         try {
             await this.driver.wait(until.elementLocated(LOADER_PROGRESS_LOCATOR), DEFAULT_TIMEOUT);
         } catch (err) {
             return;
         }
 
+        // If the progress bar is present, wait for it to dissappear.
         do {
             try {
                 await this.driver.findElement(LOADER_PROGRESS_LOCATOR);
                 console.log("Whatsapp Web is still loading in the Browser.");
                 continue;
             } catch (err) {
+                // At this point, the progress disappeared.
+                // Now, check if it disappeared because the page was loaded or the "Unreachable phone error happened"
                 try {
+                    // Search for the Dialog box saying "Trying to reach your phone"
                     await this.driver.wait(until.elementLocated(RETRY_DIALOG_BOX_LOCATOR), DEFAULT_TIMEOUT);
                 } catch (err) {
+                    // If that dialog box is not found then page has loaded successfully, so return.
                     return;    
                 }
+                // At this point, it means that Dialog box was found, hence the phone is offline and error is thrown.
                 throw "Your phone is not reachable by whatsapp";
             }
         } while (true);
