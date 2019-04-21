@@ -21,10 +21,17 @@ class WhatsappBot {
     constructor() {
     }
 
-    async init(username = null) {
+    async init(username=null, headless=false, noSandbox=false) {
         let chromeOptions = new chrome.Options();
+        if (noSandbox) chromeOptions.addArguments('--no-sandbox')
+        if (headless) chromeOptions.addArguments('--headless')
         if (username !== null) chromeOptions.addArguments(`user-data-dir=/home/${username}/.config/google-chrome/`);
-        this.driver = await new Builder().withCapabilities(Capabilities.chrome()).setChromeOptions(chromeOptions).build();
+
+        this.driver = await new Builder()
+                            .withCapabilities(Capabilities.chrome())
+                            .setChromeOptions(chromeOptions)
+                            .build();
+
         await this.driver.get(WHATSAPP_URL);
         await this._handleErrorOnLoad();
     }

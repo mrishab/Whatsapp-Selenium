@@ -7,14 +7,14 @@ let whatsapp = new WhatsappBot();
 (async function main() {
 
     try {
-        await whatsapp.init('USERNAME_HERE');
+        await whatsapp.init('USERNAME_HERE', headless=true, noSandbox=true);
         await whatsapp.openChatWith('RECEIVER_NAME');
-        await whatsapp.typeMessage("TYPE_YOUR_MESSAGE_HERE");
+        await whatsapp.typeMessage("TYPE_YOUR_MESSAGE_HERE", send=true);
 
     } catch (err) {
         console.log(err);
     } finally {
-        whatsapp.close();
+        await whatsapp.close();
     }
 
 })();
