@@ -32,7 +32,7 @@ class WhatsappBot {
                             .setChromeOptions(chromeOptions)
                             .build();
 
-        await this.driver.get(WHATSAPP_URL);
+                            await this.driver.get(WHATSAPP_URL);
         await this._handleErrorOnLoad();
     }
 
@@ -79,7 +79,7 @@ class WhatsappBot {
         do {
             try {
                 await this.driver.findElement(LOADER_PROGRESS_LOCATOR);
-                console.log("Whatsapp Web is still loading in the Browser.");
+                console.debug("Whatsapp Web is still loading in the Browser.");
                 continue;
             } catch (err) {
                 // At this point, the progress disappeared.
