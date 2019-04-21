@@ -42,15 +42,20 @@ class WhatsappBot {
         await chatElement.click();
     }
 
-    async typeMessage(message, send = false) {
+    async typeMessage(message, send=false) {
         let messageBoxElement = await this._getElement(MESSAGEBOX_LOCATOR);
         await messageBoxElement.sendKeys(message);
-        if (send) await message.sendKeys(Key.ENTER);
+        if (send) await messageBoxElement.sendKeys(Key.ENTER);
     }
 
     async sendTypedMessage() {
         let messageBoxElement = await this._getElement(MESSAGEBOX_LOCATOR);
         await messageBoxElement.sendKeys(Key.ENTER);
+    }
+
+    async sendMessageTo(name, message) {
+        await this.openChatWith(name);
+        await this.typeMessage(message, true);
     }
 
     async close() {
