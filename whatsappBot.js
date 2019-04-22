@@ -6,6 +6,8 @@ const chrome = require('selenium-webdriver/chrome');
 const WHATSAPP_URL = "https://web.whatsapp.com/";
 const NAME_PLACEHOLDER = 'NAME_OF_PERSON';
 const CHAT_XPATH = `//*[@title='${NAME_PLACEHOLDER}']/../../../../../../..`;
+const SIDE_PANEL_XPATH = '//div[@id="pane-side"]';
+const SIDE_PANEL_LOCATOR = By.xpath(SIDE_PANEL_XPATH);
 const MESSAGEBOX_XPATH = "//*[contains(@class,'selectable-text') and contains(@class,'copyable-text') and contains(@class,'_2S1VP')]"
 const MESSAGEBOX_LOCATOR = By.xpath(MESSAGEBOX_XPATH);
 const DEFAULT_TIMEOUT = 2 * 1000;
@@ -21,11 +23,14 @@ class WhatsappBot {
     constructor() {
     }
 
-    async init(username=null, headless=false, noSandbox=false) {
+    async init(options={username: null, headless: false, noSandbox: false}) {
         let chromeOptions = new chrome.Options();
-        if (noSandbox) chromeOptions.addArguments('--no-sandbox')
-        if (headless) chromeOptions.addArguments('--headless')
-        if (username !== null) chromeOptions.addArguments(`user-data-dir=/home/${username}/.config/google-chrome/`);
+        if (options.hasOwnProperty("noSandbox") && options.noSandbox)
+            chromeOptions.addArguments('--no-sandbox')
+        if (options.hasOwnProperty("headless") && options.headless)
+            chromeOptions.addArguments('--headless')
+        if (options.hasOwnProperty("username") && options.username !== null)
+            chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/google-chrome/`);
 
         this.driver = await new Builder()
                             .withCapabilities(Capabilities.chrome())
@@ -63,14 +68,18 @@ class WhatsappBot {
     }
 
     async _getElement(locator) {
-        await this.driver.wait(until.elementLocated(locator), DEFAULT_TIMEOUT);
+        await this._waitUntilLoaded(locator);
         return await this.driver.findElement(locator);
+    }
+
+    async _waitUntilLoaded(locator) {
+        await this.driver.wait(until.elementLocated(locator), DEFAULT_TIMEOUT);
     }
 
     async _handleErrorOnLoad(){
         // Check if the Progress Bar is present.
         try {
-            await this.driver.wait(until.elementLocated(LOADER_PROGRESS_LOCATOR), DEFAULT_TIMEOUT);
+            await this._waitUntilLoaded(LOADER_PROGRESS_LOCATOR);
         } catch (err) {
             return;
         }
@@ -86,10 +95,15 @@ class WhatsappBot {
                 // Now, check if it disappeared because the page was loaded or the "Unreachable phone error happened"
                 try {
                     // Search for the Dialog box saying "Trying to reach your phone"
-                    await this.driver.wait(until.elementLocated(RETRY_DIALOG_BOX_LOCATOR), DEFAULT_TIMEOUT);
+                    await this._waitUntilLoaded(RETRY_DIALOG_BOX_LOCATOR)
                 } catch (err) {
                     // If that dialog box is not found then page has loaded successfully, so return.
-                    return;    
+                    try {
+                        await this._waitUntilLoaded(SIDE_PANEL_LOCATOR);
+                        return;
+                    } catch (err) {
+                        throw "The chat window could not be found after loading. There is probably an error message."
+                    }
                 }
                 // At this point, it means that Dialog box was found, hence the phone is offline and error is thrown.
                 throw "Your phone is not reachable by whatsapp";
