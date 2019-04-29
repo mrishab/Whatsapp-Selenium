@@ -12,6 +12,17 @@ const MESSAGEBOX_XPATH = "//*[contains(@class,'selectable-text') and contains(@c
 const MESSAGEBOX_LOCATOR = By.xpath(MESSAGEBOX_XPATH);
 const DEFAULT_TIMEOUT = 2 * 1000;
 
+const ATTACHMENT_MENU_XPATH = '//span[@data-icon="clip"]';
+const ATTACHMENT_MENU_LOCATOR = By.xpath(ATTACHMENT_MENU_XPATH);
+const GALLERY_BUTTON_XPATH = '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]';
+const GALLERY_BUTTON_LOCATOR = By.xpath(GALLERY_BUTTON_XPATH);
+const IMAGE_CAPTION_INPUT_XPATH = '//span[contains(text(), "Add a caption…")]/following-sibling::div//div[@class="_2S1VP copyable-text selectable-text"]';
+const IMAGE_CAPTION_INPUT_LOCATOR = By.xpath(IMAGE_CAPTION_INPUT_XPATH);
+
+const LAST_MESSAGE_XPATH = '(//div[contains(@class, "message-out")])[last()]';
+const MSG_TICK_XPATH = '//span[contains(@data-icon, "check")]';
+const LAST_MESSAGE_DOUBLE_TICK_LOCATOR = By.xpath(LAST_MESSAGE_XPATH + MSG_TICK_XPATH);
+
 // Error Handling Constants
 const LOADER_PROGRESS_XPATH = "//progress[@dir='ltr']";
 const LOADER_PROGRESS_LOCATOR = By.xpath(LOADER_PROGRESS_XPATH);
@@ -55,16 +66,50 @@ class WhatsappBot {
 
     async sendTypedMessage() {
         let messageBoxElement = await this._getElement(MESSAGEBOX_LOCATOR);
-        await messageBoxElement.sendKeys(Key.ENTER);
+        return await messageBoxElement.sendKeys(Key.ENTER);
     }
 
     async sendMessageTo(name, message) {
         await this.openChatWith(name);
-        await this.typeMessage(message, true);
+        return await this.typeMessage(message, true);
+    }
+
+    async paste(){
+        let messageBoxElement = await this._getElement(MESSAGEBOX_LOCATOR);
+        let keys = Key.chord(Key.CONTROL, "v");
+        return await messageBoxElement.sendKeys(keys);
+    }
+
+    async _clickAttachmentMenu(){
+        let attachmentMenuButton = await this._getElement(ATTACHMENT_MENU_LOCATOR);
+        return await attachmentMenuButton.click();
+    }
+
+    async sendImage(imagePath, description){
+        // opening Menu
+        await this._clickAttachmentMenu();
+        let galleryButton = await this._getElement(GALLERY_BUTTON_LOCATOR);
+        await galleryButton.sendKeys(imagePath);
+        let captionTextBox = await this._getElement(IMAGE_CAPTION_INPUT_LOCATOR);
+        if (description) {
+            await captionTextBox.sendKeys(description);
+        }
+        await captionTextBox.sendKeys(Key.ENTER);
+        await this.lastMessageSent();
+        console.log("Image sent succesfully");
+        }
+
+    async lastMessageSent(){
+        try {
+            await this.pause(2000);
+            await this._waitUntilLoaded(LAST_MESSAGE_DOUBLE_TICK_LOCATOR, 10000);
+        } catch (err) {
+            throw `Message could not be sent because: ${err}`;
+        }
     }
 
     async close() {
-        await this.driver.quit();
+        return await this.driver.quit();
     }
 
     async _getElement(locator) {
@@ -72,8 +117,12 @@ class WhatsappBot {
         return await this.driver.findElement(locator);
     }
 
-    async _waitUntilLoaded(locator) {
-        await this.driver.wait(until.elementLocated(locator), DEFAULT_TIMEOUT);
+    async _waitUntilLoaded(locator, timeout=DEFAULT_TIMEOUT) {
+        return await this.driver.wait(until.elementLocated(locator), timeout);
+    }
+
+    async pause(timeout=DEFAULT_TIMEOUT){
+        await new Promise(resolve => setTimeout(resolve, timeout));
     }
 
     async _handleErrorOnLoad(){
