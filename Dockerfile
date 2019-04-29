@@ -23,4 +23,5 @@ RUN cd ~/ &&\
     ## Don't remove wget. It is a dependency for Google chrome browser
     apt remove xz-utils gnupg -y
 WORKDIR /var/whatsapp-bot/
-CMD [ "node", "main.js" ]
+ENTRYPOINT [ "node", "main.js" ]
+CMD []
