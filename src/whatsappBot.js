@@ -161,6 +161,9 @@ class WhatsappBot {
 
     }
 
+    async captureScreen(){
+        return await this.driver.takeScreenshot();
+    }
 }
 
 module.exports = WhatsappBot;

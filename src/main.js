@@ -1,5 +1,6 @@
 'use strict'
 const path = require('path');
+const fs = require('fs');
 
 const WhatsappBot = require('./whatsappBot');
 const USERNAME = 'root';
@@ -18,6 +19,7 @@ let whatsapp = new WhatsappBot();
     } catch (err) {
         console.log(err);
     } finally {
+        await captureScreen();
         await whatsapp.close();
     }    
 })()
@@ -45,4 +47,10 @@ async function pickImage(){
 async function moveImageToSent(imagePath){
     let sentImagePath = imagePath.replace(QUOTES_PICTURE_PATH, SENT_PICTURE_PATH);
     await renameFile(imagePath, sentImagePath);    
+}
+
+async function captureScreen(){
+    console.log("Capturing Screenshot")
+    let image = await whatsapp.captureScreen();
+    fs.writeFileSync(path.join(SENT_PICTURE_PATH, "capture.png"));
 }
