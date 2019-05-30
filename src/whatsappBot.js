@@ -109,11 +109,12 @@ class WhatsappBot {
 
     async close() {
         await this.driver.quit();
+        console.log("Closed session");
     }
 
     async _getElement(locator) {
         await this._waitUntilLoaded(locator);
-        await this.driver.findElement(locator);
+        return await this.driver.findElement(locator);
     }
 
     async _waitUntilLoaded(locator, timeout = DEFAULT_TIMEOUT) {
@@ -129,7 +130,7 @@ class WhatsappBot {
         try {
             await this._waitUntilLoaded(LOADER_PROGRESS_LOCATOR);
         } catch (err) {
-            return;
+            return new Promise((res)=>{res()});
         }
 
         // If the progress bar is present, wait for it to dissappear.
@@ -148,7 +149,7 @@ class WhatsappBot {
                     // If that dialog box is not found then page has loaded successfully, so return.
                     try {
                         await this._waitUntilLoaded(SIDE_PANEL_LOCATOR);
-                        return;
+                        return new Promise((res)=>{res()});
                     } catch (err) {
                         throw "The chat window could not be found after loading. There is probably an error message."
                     }
@@ -161,7 +162,7 @@ class WhatsappBot {
     }
 
     async captureScreen() {
-        await this.driver.takeScreenshot();
+        return await this.driver.takeScreenshot();
     }
 }
 

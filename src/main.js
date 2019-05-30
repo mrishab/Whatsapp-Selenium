@@ -51,6 +51,9 @@ async function moveImageToSent(imagePath){
 
 async function captureScreen(){
     console.log("Capturing Screenshot")
-    let image = await whatsapp.captureScreen();
-    fs.writeFileSync(path.join(SENT_PICTURE_PATH, "capture.png"));
+    let error, image = whatsapp.captureScreen();
+    if (error) {
+        throw error;
+    }
+    fs.writeFileSync(path.join(SENT_PICTURE_PATH, "capture.png"), image, 'base64');
 }
