@@ -31,10 +31,9 @@ const RETRY_DIALOG_BOX_LOCATOR = By.xpath(RETRY_DIALOG_BOX_XPATH);
 
 class WhatsappBot {
 
-    constructor() {
-    }
+    constructor() { }
 
-    async init(options={username: null, headless: false, noSandbox: false}) {
+    async init(options = { username: null, headless: false, noSandbox: false }) {
         let chromeOptions = new chrome.Options();
         if (options.hasOwnProperty("noSandbox") && options.noSandbox)
             chromeOptions.addArguments('--no-sandbox')
@@ -44,11 +43,11 @@ class WhatsappBot {
             chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/google-chrome/`);
 
         this.driver = await new Builder()
-                            .withCapabilities(Capabilities.chrome())
-                            .setChromeOptions(chromeOptions)
-                            .build();
+            .withCapabilities(Capabilities.chrome())
+            .setChromeOptions(chromeOptions)
+            .build();
 
-                            await this.driver.get(WHATSAPP_URL);
+        await this.driver.get(WHATSAPP_URL);
         await this._handleErrorOnLoad();
     }
 
@@ -58,7 +57,7 @@ class WhatsappBot {
         await chatElement.click();
     }
 
-    async typeMessage(message, send=false) {
+    async typeMessage(message, send = false) {
         let messageBoxElement = await this._getElement(MESSAGEBOX_LOCATOR);
         await messageBoxElement.sendKeys(message);
         if (send) await messageBoxElement.sendKeys(Key.ENTER);
@@ -66,26 +65,26 @@ class WhatsappBot {
 
     async sendTypedMessage() {
         let messageBoxElement = await this._getElement(MESSAGEBOX_LOCATOR);
-        return await messageBoxElement.sendKeys(Key.ENTER);
+        await messageBoxElement.sendKeys(Key.ENTER);
     }
 
     async sendMessageTo(name, message) {
         await this.openChatWith(name);
-        return await this.typeMessage(message, true);
+        await this.typeMessage(message, true);
     }
 
-    async paste(){
+    async paste() {
         let messageBoxElement = await this._getElement(MESSAGEBOX_LOCATOR);
         let keys = Key.chord(Key.CONTROL, "v");
-        return await messageBoxElement.sendKeys(keys);
+        await messageBoxElement.sendKeys(keys);
     }
 
-    async _clickAttachmentMenu(){
+    async _clickAttachmentMenu() {
         let attachmentMenuButton = await this._getElement(ATTACHMENT_MENU_LOCATOR);
-        return await attachmentMenuButton.click();
+        await attachmentMenuButton.click();
     }
 
-    async sendImage(imagePath, description){
+    async sendImage(imagePath, description) {
         // opening Menu
         await this._clickAttachmentMenu();
         let galleryButton = await this._getElement(GALLERY_BUTTON_LOCATOR);
@@ -97,9 +96,9 @@ class WhatsappBot {
         await captionTextBox.sendKeys(Key.ENTER);
         await this.lastMessageSent();
         console.log("Image sent succesfully");
-        }
+    }
 
-    async lastMessageSent(){
+    async lastMessageSent() {
         try {
             await this.pause(2000);
             await this._waitUntilLoaded(LAST_MESSAGE_DOUBLE_TICK_LOCATOR, 10000);
@@ -109,23 +108,23 @@ class WhatsappBot {
     }
 
     async close() {
-        return await this.driver.quit();
+        await this.driver.quit();
     }
 
     async _getElement(locator) {
         await this._waitUntilLoaded(locator);
-        return await this.driver.findElement(locator);
+        await this.driver.findElement(locator);
     }
 
-    async _waitUntilLoaded(locator, timeout=DEFAULT_TIMEOUT) {
-        return await this.driver.wait(until.elementLocated(locator), timeout);
+    async _waitUntilLoaded(locator, timeout = DEFAULT_TIMEOUT) {
+        await this.driver.wait(until.elementLocated(locator), timeout);
     }
 
-    async pause(timeout=DEFAULT_TIMEOUT){
+    async pause(timeout = DEFAULT_TIMEOUT) {
         await new Promise(resolve => setTimeout(resolve, timeout));
     }
 
-    async _handleErrorOnLoad(){
+    async _handleErrorOnLoad() {
         // Check if the Progress Bar is present.
         try {
             await this._waitUntilLoaded(LOADER_PROGRESS_LOCATOR);
@@ -161,8 +160,8 @@ class WhatsappBot {
 
     }
 
-    async captureScreen(){
-        return await this.driver.takeScreenshot();
+    async captureScreen() {
+        await this.driver.takeScreenshot();
     }
 }
 
