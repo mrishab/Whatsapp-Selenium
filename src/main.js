@@ -55,5 +55,5 @@ async function captureScreen() {
     if (error) {
         throw error;
     }
-    fs.writeFileSync(path.join(SENT_PICTURE_PATH, "capture.png"), image, 'base64');
+    fs.writeFileSync(path.join(SENT_PICTURE_PATH, "Last Run Status.png"), image, 'base64');
 }
