@@ -136,7 +136,7 @@ class WhatsappBot {
         try {
             await this._waitUntilLoaded(LOADER_PROGRESS_LOCATOR);
         } catch (err) {
-            return new Promise((res)=>{res()});
+            return new Promise((res) => { res() });
         }
 
         // If the progress bar is present, wait for it to dissappear.
@@ -155,7 +155,7 @@ class WhatsappBot {
                     // If that dialog box is not found then page has loaded successfully, so return.
                     try {
                         await this._waitUntilLoaded(SIDE_PANEL_LOCATOR);
-                        return new Promise((res)=>{res()});
+                        return new Promise((res) => { res() });
                     } catch (err) {
                         throw "The chat window could not be found after loading. There is probably an error message."
                     }

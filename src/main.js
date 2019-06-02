@@ -13,7 +13,7 @@ const SENT_PICTURE_PATH = path.join(PICTURE_DIR_PATH, 'Sent');
 // Running the main
 let whatsapp = new WhatsappBot();
 
-(async function(){
+(async function () {
     try {
         await main();
     } catch (err) {
@@ -21,10 +21,10 @@ let whatsapp = new WhatsappBot();
     } finally {
         await captureScreen();
         await whatsapp.close();
-    }    
+    }
 })()
 
-async function main(){
+async function main() {
     let name = readArgs()[0];
     console.log(`Preparing to send message to '${name}'.`);
     let image = await pickImage();
@@ -32,24 +32,24 @@ async function main(){
     await moveImageToSent(image);
 };
 
-async function sendWhatsappImage(from, to, imagePath, description){
-    await whatsapp.init({username:from, headless:true, noSandbox:true, isChromium: true});
+async function sendWhatsappImage(from, to, imagePath, description) {
+    await whatsapp.init({ username: from, headless: true, noSandbox: true, isChromium: true });
     await whatsapp.openChatWith(to);
     await whatsapp.sendImage(imagePath, description);
 }
 
-async function pickImage(){
+async function pickImage() {
     let files = await getFilenames(QUOTES_PICTURE_PATH);
     let imageFilename = getRandomItem(files, 2);
     return path.join(QUOTES_PICTURE_PATH, imageFilename);
 }
 
-async function moveImageToSent(imagePath){
+async function moveImageToSent(imagePath) {
     let sentImagePath = imagePath.replace(QUOTES_PICTURE_PATH, SENT_PICTURE_PATH);
-    await renameFile(imagePath, sentImagePath);    
+    await renameFile(imagePath, sentImagePath);
 }
 
-async function captureScreen(){
+async function captureScreen() {
     console.log("Capturing Screenshot")
     let error, image = whatsapp.captureScreen();
     if (error) {
