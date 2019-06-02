@@ -9,4 +9,4 @@ docker run --rm -ti \
 docker run --rm \
         -v "/home/$USER/.config/chromium/Profile 1:/home/root/.config/chromium/Default" \
         -v "/home/$USER/Pictures/:/home/root/Pictures/" \
-        whatsapp-bot
+        whatsapp-bot "<RECEPIENT_NAME>"
