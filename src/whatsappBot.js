@@ -10,13 +10,13 @@ const SIDE_PANEL_XPATH = '//div[@id="pane-side"]';
 const SIDE_PANEL_LOCATOR = By.xpath(SIDE_PANEL_XPATH);
 const MESSAGEBOX_XPATH = "//*[contains(@class,'selectable-text') and contains(@class,'copyable-text') and contains(@class,'_2S1VP')]"
 const MESSAGEBOX_LOCATOR = By.xpath(MESSAGEBOX_XPATH);
-const DEFAULT_TIMEOUT = 2 * 1000;
+const DEFAULT_TIMEOUT = 5 * 1000;
 
 const ATTACHMENT_MENU_XPATH = '//span[@data-icon="clip"]';
 const ATTACHMENT_MENU_LOCATOR = By.xpath(ATTACHMENT_MENU_XPATH);
 const GALLERY_BUTTON_XPATH = '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]';
 const GALLERY_BUTTON_LOCATOR = By.xpath(GALLERY_BUTTON_XPATH);
-const IMAGE_CAPTION_INPUT_XPATH = '//span[contains(text(), "Add a caption…")]/following-sibling::div//div[@class="_2S1VP copyable-text selectable-text"]';
+const IMAGE_CAPTION_INPUT_XPATH = '//span[contains(text(), "Add a caption…")]/following-sibling::div//div[contains(@class, "copyable-text") and contains(@class, "selectable-text")]';
 const IMAGE_CAPTION_INPUT_LOCATOR = By.xpath(IMAGE_CAPTION_INPUT_XPATH);
 
 const LAST_MESSAGE_XPATH = '(//div[contains(@class, "message-out")])[last()]';
