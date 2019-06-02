@@ -33,14 +33,20 @@ class WhatsappBot {
 
     constructor() { }
 
-    async init(options = { username: null, headless: false, noSandbox: false }) {
+    async init(options = { username: null, headless: false, noSandbox: false, isChromium: true }) {
+        let browser = "chromium";
         let chromeOptions = new chrome.Options();
+
+        if (options.hasOwnProperty("isChromium") && !options.isChromium)
+            browser = "google-chrome";
         if (options.hasOwnProperty("noSandbox") && options.noSandbox)
             chromeOptions.addArguments('--no-sandbox')
         if (options.hasOwnProperty("headless") && options.headless)
             chromeOptions.addArguments('--headless')
         if (options.hasOwnProperty("username") && options.username !== null)
-            chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/google-chrome/`);
+            chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/${browser}/`);
+        if (browser === "chromium")
+            chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36")
 
         this.driver = await new Builder()
             .withCapabilities(Capabilities.chrome())

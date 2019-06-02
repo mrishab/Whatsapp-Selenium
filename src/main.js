@@ -33,7 +33,7 @@ async function main(){
 };
 
 async function sendWhatsappImage(from, to, imagePath, description){
-    await whatsapp.init({username:from, headless:true, noSandbox:true});
+    await whatsapp.init({username:from, headless:true, noSandbox:true, isChromium: true});
     await whatsapp.openChatWith(to);
     await whatsapp.sendImage(imagePath, description);
 }
