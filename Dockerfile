@@ -9,7 +9,7 @@ RUN cd /var/whatsapp-bot/ &&\
     # Installing the tools
     apt install nodejs chromium-browser -y &&\
     # Installing dependencies: Chromedriver
-    npm install -g chromedriver@latest --unsafe-perm &&\
+    npm install -g chromedriver@^74 --unsafe-perm &&\
     npm install
 WORKDIR /var/whatsapp-bot/
 ENTRYPOINT [ "node", "main.js" ]

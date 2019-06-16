@@ -8,9 +8,9 @@ module.exports = {
     readArgs: readArgs
 };
 
-async function getFilenames(dirPath){
+async function getFilenames(dirPath) {
     return new Promise((resolve, reject) => {
-        let callback = function(err, files){
+        let callback = function (err, files) {
             if (err) {
                 return reject(err);
             } else {
@@ -23,7 +23,7 @@ async function getFilenames(dirPath){
 
 async function renameFile(oldPath, newPath) {
     return new Promise((resolve, reject) => {
-        let callback = function(err) {
+        let callback = function (err) {
             if (err) throw err;
             else resolve();
         }
@@ -31,14 +31,16 @@ async function renameFile(oldPath, newPath) {
     });
 }
 
-function getRandomItem(list, start=0, end=list.length) {
-    return  list[getRandomInt(start, end)];
+function getRandomItem(list, start = 0, end = list.length) {
+    return list[getRandomInt(start, end)];
 }
 
-function getRandomInt(min, max){
-    return Math.floor(Math.random() * (max - min) ) + min;
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function readArgs(){
-    return process.argv.slice(2);
+function readArgs() {
+    let rawArgs = process.argv.slice(2);
+    const minimist = require('minimist');
+    return minimist(rawArgs);
 }

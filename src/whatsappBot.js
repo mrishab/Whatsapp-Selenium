@@ -5,7 +5,8 @@ const chrome = require('selenium-webdriver/chrome');
 
 const WHATSAPP_URL = "https://web.whatsapp.com/";
 const NAME_PLACEHOLDER = 'NAME_OF_PERSON';
-const CHAT_XPATH = `//*[@title='${NAME_PLACEHOLDER}']/../../../../../../..`;
+const GROUP_CHAT_PATH = `//*[@title='${NAME_PLACEHOLDER}']/../../../../../..`
+const INDIVIDUAL_CHAT_XPATH = `${GROUP_CHAT_PATH}/..`;
 const SIDE_PANEL_XPATH = '//div[@id="pane-side"]';
 const MESSAGEBOX_XPATH = "//*[contains(@class,'selectable-text') and contains(@class,'copyable-text') and contains(@class,'_2S1VP')]"
 const DEFAULT_TIMEOUT = 5 * 1000;
@@ -27,31 +28,19 @@ class WhatsappBot {
     constructor() { }
 
     async init(options = { username: null, headless: false, noSandbox: false, isChromium: true }) {
-        let browser = "chromium";
-        let chromeOptions = new chrome.Options();
-
-        if (!options.isChromium)
-            browser = "google-chrome";
-        if (options.noSandbox)
-            chromeOptions.addArguments('--no-sandbox')
-        if (options.headless)
-            chromeOptions.addArguments('--headless')
-        if (options.username)
-            chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/${browser}/`);
-        if (browser === "chromium")
-            chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36")
-
+        let chromeOptions = this._buildChromeOptions(options);
         this.driver = await new Builder()
             .withCapabilities(Capabilities.chrome())
             .setChromeOptions(chromeOptions)
             .build();
 
         await this.driver.get(WHATSAPP_URL);
-        await this._handleErrorOnLoad();
+        await this._waitToLoad();
     }
 
-    async openChatWith(name) {
-        let chatXPath = CHAT_XPATH.replace(NAME_PLACEHOLDER, name)
+    async openChatWith(name, isGroup = false) {
+        let chatXPath = isGroup ? GROUP_CHAT_PATH : INDIVIDUAL_CHAT_XPATH;
+        chatXPath = chatXPath.replace(NAME_PLACEHOLDER, name)
         let chatElement = await this._getElement(chatXPath);
         await chatElement.click();
     }
@@ -67,8 +56,8 @@ class WhatsappBot {
         await messageBoxElement.sendKeys(Key.ENTER);
     }
 
-    async sendMessageTo(name, message) {
-        await this.openChatWith(name);
+    async sendMessageTo(name, message, isGroup = false) {
+        await this.openChatWith(name, isGroup);
         await this.typeMessage(message, true);
     }
 
@@ -96,6 +85,25 @@ class WhatsappBot {
         await this.lastMessageSent();
         console.log("Image sent succesfully");
     }
+    _buildChromeOptions(options) {
+        let browser = "chromium";
+        let chromeOptions = new chrome.Options();
+        if (!options.isChromium)
+            browser = "google-chrome";
+        if (options.noSandbox)
+            chromeOptions.addArguments('--no-sandbox')
+        // if (options.headless)
+        //     chromeOptions.addArguments('--headless')
+        if (options.username)
+            chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/${browser}/`);
+        // if (browser === "chromium")
+        //     chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36")
+        return chromeOptions;
+    }
+    async sendImageTo(name, isGroup, imagePath, description) {
+        await this.openChatWith(name, isGroup);
+        await this.sendImage(imagePath, description);
+    }
 
     async lastMessageSent() {
         try {
@@ -106,9 +114,18 @@ class WhatsappBot {
         }
     }
 
+    async captureScreen() {
+        return await this.driver.takeScreenshot();
+    }
+
     async close() {
-        await this.driver.quit();
+        if (this.isActive())
+            await this.driver.quit();
         console.log("Closed session");
+    }
+
+    isActive() {
+        return this.driver !== undefined && this.driver !== null;
     }
 
     async _getElement(xpath) {
@@ -126,17 +143,27 @@ class WhatsappBot {
         await new Promise(resolve => setTimeout(resolve, timeout));
     }
 
-    async _parseXpath(xpath, isLocator = false) {
-        let locator;
-        if (isLocator) {
-            locator = xpath;
-        } else {
-            locator = By.xpath(xpath);
-        }
-        return locator;
+    _buildChromeOptions(options) {
+        let browser = "chromium";
+        let chromeOptions = new chrome.Options();
+        if (!options.isChromium)
+            browser = "google-chrome";
+        if (options.noSandbox)
+            chromeOptions.addArguments('--no-sandbox')
+        if (options.headless)
+            chromeOptions.addArguments('--headless')
+        if (options.username)
+            chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/${browser}/`);
+        if (browser === "chromium")
+            chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36")
+        return chromeOptions;
     }
 
-    async _handleErrorOnLoad() {
+    _parseXpath(xpath, isLocator = false) {
+        return isLocator ? xpath : By.xpath(xpath);
+    }
+
+    async _waitToLoad() {
         // Check if the Progress Bar is present.
         try {
             await this._waitUntilLoaded(LOADER_PROGRESS_XPATH);
@@ -170,10 +197,6 @@ class WhatsappBot {
             }
         } while (true);
 
-    }
-
-    async captureScreen() {
-        return await this.driver.takeScreenshot();
     }
 }
 

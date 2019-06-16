@@ -7,6 +7,6 @@ docker run --rm -ti \
 
 # Production
 docker run --rm \
-        -v "/home/$USER/.config/chromium/Profile 1:/home/root/.config/chromium/Default" \
+        -v "/home/$USER/.config/chromium/Default:/home/root/.config/chromium/Default" \
         -v "/home/$USER/Pictures/:/home/root/Pictures/" \
-        whatsapp-bot "<RECEPIENT_NAME>"
+        whatsapp-bot --individuals "<INDIVIDUAL_1>, <INDIVIDUAL_2>" --groups "<GROUP_1>, <GROUP_2>"

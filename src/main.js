@@ -25,17 +25,30 @@ let whatsapp = new WhatsappBot();
 })()
 
 async function main() {
-    let name = readArgs()[0];
-    console.log(`Preparing to send message to '${name}'.`);
-    let image = await pickImage();
-    await sendWhatsappImage(USERNAME, name, image);
-    await moveImageToSent(image);
+    let { individuals, groups, description } = readArgs();
+    await whatsapp.init({ username: USERNAME, headless: true, noSandbox: true, isChromium: true });
+    let imagePath = await pickImage();
+    await sendWhatsappImageToAll(individuals, groups, imagePath, description);
+    await moveImageToSent(imagePath);
 };
 
-async function sendWhatsappImage(from, to, imagePath, description) {
-    await whatsapp.init({ username: from, headless: true, noSandbox: true, isChromium: true });
-    await whatsapp.openChatWith(to);
-    await whatsapp.sendImage(imagePath, description);
+async function sendWhatsappImageToAll(individuals, groups, imagePath, description) {
+    if (individuals) {
+        individuals = individuals.split(",");
+        await sendImageToList(individuals, false, imagePath, description);
+    }
+    if (groups) {
+        groups = groups.split(",");
+        await sendImageToList(groups, true, imagePath, description);
+    }
+}
+
+async function sendImageToList(toList, isGroup, imagePath, description) {
+    for (let name of toList) {
+        name = name.trim()
+        console.log(`Preparing to send message to '${name}'.`);
+        await whatsapp.sendImageTo(name, isGroup, imagePath, description);
+    }
 }
 
 async function pickImage() {
@@ -50,10 +63,14 @@ async function moveImageToSent(imagePath) {
 }
 
 async function captureScreen() {
-    console.log("Capturing Screenshot")
+    if (!whatsapp.isActive()) {
+        return;
+    }
     let error, image = whatsapp.captureScreen();
     if (error) {
         throw error;
     }
+    image = await image;
     fs.writeFileSync(path.join(SENT_PICTURE_PATH, "Last Run Status.png"), image, 'base64');
+    console.log("[SUCCESS] Screeshot captured")
 }
