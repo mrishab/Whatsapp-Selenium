@@ -1,0 +1,4 @@
+# Un tested. Test it on next upgrade
+FROM whatsapp-bot:latest
+RUN rm -rf /var/whatsapp-bot/*
+COPY src/* /var/whatsapp-bot/
