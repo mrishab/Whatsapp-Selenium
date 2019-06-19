@@ -45,6 +45,7 @@ async function sendWhatsappImageToAll(imagePath, description, delimiter = DEFAUL
 async function sendImageToList(toList, isGroup, imagePath, description) {
     for (let name of toList) {
         name = name.trim()
+        if (name === "") continue;
         console.log(`Preparing to send message to '${name}'.`);
         await whatsapp.sendImageTo(name, isGroup, imagePath, description);
     }
