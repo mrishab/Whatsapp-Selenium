@@ -35,19 +35,19 @@ async function main() {
 };
 
 async function sendWhatsappImageToAll(imagePath, description, delimiter = DEFAULT_LIST_DELIMITER, ...listStrings) {
-    listStrings.forEach(listStr => {
+    for (let listStr of listStrings) {
         if (!listStr) return;
         individualEntities = listStr.split(delimiter);
         await sendImageToList(individualEntities, true, imagePath, description);
-    })
+    }
 }
 
 async function sendImageToList(toList, isGroup, imagePath, description) {
-    toList.forEach(name => {
+    for (let name of toList) {
         name = name.trim()
         console.log(`Preparing to send message to '${name}'.`);
         await whatsapp.sendImageTo(name, isGroup, imagePath, description);
-    });
+    }
 }
 
 async function pickImage() {
