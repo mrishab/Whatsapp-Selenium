@@ -10,7 +10,7 @@ const PICTURE_DIR_PATH = path.resolve(`/home/${USERNAME}/Pictures`);
 const QUOTES_PICTURE_PATH = path.join(PICTURE_DIR_PATH, 'Quotes');
 const SENT_PICTURE_PATH = path.join(PICTURE_DIR_PATH, 'Sent');
 
-const LIST_DELIMITER = "^"
+const DEFAULT_LIST_DELIMITER = "^"
 
 // Running the main
 let whatsapp = new WhatsappBot();
@@ -27,30 +27,27 @@ let whatsapp = new WhatsappBot();
 })()
 
 async function main() {
-    let { individuals, groups, description } = readArgs();
+    let { individuals, groups, description, delimiter } = readArgs();
     await whatsapp.init({ username: USERNAME, headless: true, noSandbox: true, isChromium: true });
     let imagePath = await pickImage();
-    await sendWhatsappImageToAll(individuals, groups, imagePath, description);
+    await sendWhatsappImageToAll(imagePath, description, delimiter, individuals, groups);
     await moveImageToSent(imagePath);
 };
 
-async function sendWhatsappImageToAll(individuals, groups, imagePath, description) {
-    if (individuals) {
-        individuals = individuals.split(LIST_DELIMITER);
-        await sendImageToList(individuals, false, imagePath, description);
-    }
-    if (groups) {
-        groups = groups.split(LIST_DELIMITER);
-        await sendImageToList(groups, true, imagePath, description);
-    }
+async function sendWhatsappImageToAll(imagePath, description, delimiter = DEFAULT_LIST_DELIMITER, ...listStrings) {
+    listStrings.forEach(listStr => {
+        if (!listStr) return;
+        individualEntities = listStr.split(delimiter);
+        await sendImageToList(individualEntities, true, imagePath, description);
+    })
 }
 
 async function sendImageToList(toList, isGroup, imagePath, description) {
-    for (let name of toList) {
+    toList.forEach(name => {
         name = name.trim()
         console.log(`Preparing to send message to '${name}'.`);
         await whatsapp.sendImageTo(name, isGroup, imagePath, description);
-    }
+    });
 }
 
 async function pickImage() {
