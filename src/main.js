@@ -10,6 +10,8 @@ const PICTURE_DIR_PATH = path.resolve(`/home/${USERNAME}/Pictures`);
 const QUOTES_PICTURE_PATH = path.join(PICTURE_DIR_PATH, 'Quotes');
 const SENT_PICTURE_PATH = path.join(PICTURE_DIR_PATH, 'Sent');
 
+const LIST_DELIMITER = "^"
+
 // Running the main
 let whatsapp = new WhatsappBot();
 
@@ -34,11 +36,11 @@ async function main() {
 
 async function sendWhatsappImageToAll(individuals, groups, imagePath, description) {
     if (individuals) {
-        individuals = individuals.split(",");
+        individuals = individuals.split(LIST_DELIMITER);
         await sendImageToList(individuals, false, imagePath, description);
     }
     if (groups) {
-        groups = groups.split(",");
+        groups = groups.split(LIST_DELIMITER);
         await sendImageToList(groups, true, imagePath, description);
     }
 }
