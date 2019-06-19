@@ -1,4 +1,5 @@
 # Un tested. Test it on next upgrade
 FROM whatsapp-bot:latest
-RUN rm -rf /var/whatsapp-bot/*
+RUN rm -rf /var/whatsapp-bot/*.js
 COPY src/* /var/whatsapp-bot/
+RUN npm install
