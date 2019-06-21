@@ -41,9 +41,15 @@ class WhatsappBot {
     }
 
     async openChatWith(name) {
-        await this.searchContact(name);
         let chatXPath = CHAT_XPATH.replace(NAME_PLACEHOLDER, name)
-        let chatElement = await this._getElement(chatXPath);
+        let chatElement;
+        try {
+            chatElement = await this._getElement(chatXPath);
+        } catch (e) {
+            console.log(`${name} was not found. Attempting a search`);
+        await this.searchContact(name);
+            chatElement = await this._getElement(chatXPath);
+        }
         await chatElement.click();
     }
 
@@ -101,12 +107,12 @@ class WhatsappBot {
             browser = "google-chrome";
         if (options.noSandbox)
             chromeOptions.addArguments('--no-sandbox')
-        // if (options.headless)
-        //     chromeOptions.addArguments('--headless')
+        if (options.headless)
+            chromeOptions.addArguments('--headless')
         if (options.username)
             chromeOptions.addArguments(`user-data-dir=/home/${options.username}/.config/${browser}/`);
-        // if (browser === "chromium")
-        //     chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36")
+        if (browser === "chromium")
+            chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36")
         return chromeOptions;
     }
     async sendImageTo(name, imagePath, description) {

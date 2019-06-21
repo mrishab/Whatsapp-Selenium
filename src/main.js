@@ -38,7 +38,7 @@ async function sendWhatsappImageToAll(imagePath, description, delimiter = DEFAUL
     for (let listStr of listStrings) {
         if (!listStr) return;
         let individualEntities = listStr.split(delimiter);
-        await sendImageToList(individualEntities, true, imagePath, description);
+        await sendImageToList(individualEntities, imagePath, description);
     }
 }
 
