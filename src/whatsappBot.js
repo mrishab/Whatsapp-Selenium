@@ -5,8 +5,7 @@ const chrome = require('selenium-webdriver/chrome');
 
 const WHATSAPP_URL = "https://web.whatsapp.com/";
 const NAME_PLACEHOLDER = 'NAME_OF_PERSON';
-const GROUP_CHAT_PATH = `//*[@title='${NAME_PLACEHOLDER}']/../../../../../..`
-const INDIVIDUAL_CHAT_XPATH = `${GROUP_CHAT_PATH}/..`;
+const CHAT_XPATH = `//*[@title='${NAME_PLACEHOLDER}']/../../../../../..`
 const SIDE_PANEL_XPATH = '//div[@id="pane-side"]';
 const MESSAGEBOX_XPATH = "//*[contains(@class,'selectable-text') and contains(@class,'copyable-text') and contains(@class,'_2S1VP')]"
 const DEFAULT_TIMEOUT = 5 * 1000;
@@ -14,6 +13,9 @@ const DEFAULT_TIMEOUT = 5 * 1000;
 const ATTACHMENT_MENU_XPATH = '//span[@data-icon="clip"]';
 const GALLERY_BUTTON_XPATH = '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]';
 const IMAGE_CAPTION_INPUT_XPATH = '//span[contains(text(), "Add a caption…")]/following-sibling::div//div[contains(@class, "copyable-text") and contains(@class, "selectable-text")]';
+
+const NEW_CHAT_BUTTON_XPATH = '//div[@title="New chat"]/../..';
+const CONTACT_SEARCH_INPUT_XPATH = '//input[@title="Search contacts"]';
 
 const LAST_MESSAGE_XPATH = '(//div[contains(@class, "message-out")])[last()]';
 const MSG_TICK_XPATH = '//span[contains(@data-icon, "check")]';
@@ -38,11 +40,18 @@ class WhatsappBot {
         await this._waitToLoad();
     }
 
-    async openChatWith(name, isGroup = false) {
-        let chatXPath = isGroup ? GROUP_CHAT_PATH : INDIVIDUAL_CHAT_XPATH;
-        chatXPath = chatXPath.replace(NAME_PLACEHOLDER, name)
+    async openChatWith(name) {
+        await this.searchContact(name);
+        let chatXPath = CHAT_XPATH.replace(NAME_PLACEHOLDER, name)
         let chatElement = await this._getElement(chatXPath);
         await chatElement.click();
+    }
+
+    async searchContact(name) {
+        let newChatButtonElement = await this._getElement(NEW_CHAT_BUTTON_XPATH);
+        await newChatButtonElement.click();
+        let searchContactInputField = await this._getElement(CONTACT_SEARCH_INPUT_XPATH);
+        await searchContactInputField.sendKeys(name);
     }
 
     async typeMessage(message, send = false) {
@@ -56,8 +65,8 @@ class WhatsappBot {
         await messageBoxElement.sendKeys(Key.ENTER);
     }
 
-    async sendMessageTo(name, message, isGroup = false) {
-        await this.openChatWith(name, isGroup);
+    async sendMessageTo(name, message) {
+        await this.openChatWith(name);
         await this.typeMessage(message, true);
     }
 
@@ -100,8 +109,8 @@ class WhatsappBot {
         //     chromeOptions.addArguments("--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36")
         return chromeOptions;
     }
-    async sendImageTo(name, isGroup, imagePath, description) {
-        await this.openChatWith(name, isGroup);
+    async sendImageTo(name, imagePath, description) {
+        await this.openChatWith(name);
         await this.sendImage(imagePath, description);
     }
 
