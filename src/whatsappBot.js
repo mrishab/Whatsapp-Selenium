@@ -7,7 +7,7 @@ const WHATSAPP_URL = "https://web.whatsapp.com/";
 const NAME_PLACEHOLDER = 'NAME_OF_PERSON';
 const CHAT_XPATH = `//*[@title='${NAME_PLACEHOLDER}']/../../../../../..`
 const SIDE_PANEL_XPATH = '//div[@id="pane-side"]';
-const MESSAGEBOX_XPATH = "//*[contains(@class,'selectable-text') and contains(@class,'copyable-text') and contains(@class,'_2S1VP')]"
+const MESSAGEBOX_XPATH = "//div[text()='Type a message']/following-sibling::div[@contenteditable='true']"
 const DEFAULT_TIMEOUT = 5 * 1000;
 
 const ATTACHMENT_MENU_XPATH = '//span[@data-icon="clip"]';
