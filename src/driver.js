@@ -11,7 +11,7 @@ export default class Driver {
     }
 
     async get(url) {
-        this.driver.get(url);
+        await this.driver.get(url);
     }
 
     async getElement(xpath) {
