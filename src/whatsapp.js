@@ -8,7 +8,7 @@ import Driver from './driver';
 const WHATSAPP_URL = "https://web.whatsapp.com/";
 const DEFAULT_TIMEOUT = 5 * 1000;
 
-export default class WhatsappBot {
+export default class Whatsapp {
 
     constructor(webdriver) {
         this.driver = new Driver(webdriver);
