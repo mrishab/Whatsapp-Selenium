@@ -1,4 +1,6 @@
-import {By, until} from 'selenium-webdriver';
+import { By, until } from 'selenium-webdriver';
+
+import { DEFAULT_TIMEOUT } from './whatsapp';
 
 export default class Driver {
 
@@ -6,8 +8,8 @@ export default class Driver {
         this.driver = webdriver;
     }
 
-    parseXpath(xpath, isLocator = false) {
-        return isLocator ? xpath : By.xpath(xpath);
+    parseXpath(xpath) {
+        return By.xpath(xpath);
     }
 
     async get(url) {
@@ -15,21 +17,13 @@ export default class Driver {
     }
 
     async getElement(xpath) {
-        await this.waitUntilLoaded(xpath);
         let locator = this.parseXpath(xpath);
+        await this.waitToLocate(locator);
         return await this.driver.findElement(locator);
     }
 
-    async waitUntilLoaded(xpath, timeout = DEFAULT_TIMEOUT) {
-        let locator = this.parseXpath(xpath);
-        await this.driver.wait(until.elementLocated(locator), timeout);
-    }
-
-    async takeScreenshot() {
-        return await this.driver.takeScreenshot();
-    }
-
-    async close() {
-        await this.driver.quit();
+    async waitToLocate(locator, timeout = DEFAULT_TIMEOUT) {
+        const condition = until.elementLocated(locator);
+        await this.driver.wait(async driver => condition.fn(driver), timeout);
     }
 }

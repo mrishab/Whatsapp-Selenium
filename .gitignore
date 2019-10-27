@@ -1,4 +1,5 @@
 node_modules/
-*.log
 .vscode/
-src/package-lock.json
+lib/
+package-lock.json
+*.log

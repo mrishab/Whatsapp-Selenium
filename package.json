@@ -1,14 +1,27 @@
 {
   "name": "whatsapp-selenium",
   "version": "1.0.0",
-  "description": "Selenium wrapper for Whatsapp Web interface.",
-  "main": "src/whatsapp.js",
+  "description": "Selenium wrapper for Whatsapp Web UI.",
+  "main": "lib/whatsapp.js",
   "dependencies": {
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
-  "devDependencies": {},
+  "files": [
+    "lib/"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-es2015": "^6.24.1"
+  },
   "scripts": {
+    "prepublish": "$npm_package_cli_babel src --out-dir lib",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
   },
   "repository": {
     "type": "git",
@@ -16,12 +29,16 @@
   },
   "keywords": [
     "whatsapp",
-    "selenium"
+    "selenium",
+    "whatsapp-api"
   ],
   "author": "Rishab Manocha",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mrishab/Whatsapp-Selenium/issues"
   },
-  "homepage": "https://github.com/mrishab/Whatsapp-Selenium#readme"
+  "homepage": "https://github.com/mrishab/Whatsapp-Selenium#readme",
+  "cli": {
+    "babel": "node_modules/babel-cli/bin/babel.js"
+  }
 }
