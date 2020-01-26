@@ -4,15 +4,14 @@ const { Key } = require('selenium-webdriver');
 
 const { NAME_PLACEHOLDER } = require('./xpathConstants');
 const { xpath } = require('./xpathConstants');
-const { Driver } = require('./driver');
 
 const WHATSAPP_URL = "https://web.whatsapp.com/";
 const DEFAULT_TIMEOUT = 5 * 1000; // 5 seconds
 
 class Whatsapp {
 
-    constructor(webdriver) {
-        this.driver = new Driver(webdriver);
+    constructor(driver) {
+        this.driver = driver;
     }
 
     async init() {
