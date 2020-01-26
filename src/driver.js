@@ -1,8 +1,8 @@
-import { By, until } from 'selenium-webdriver';
+const { By, until } = require('selenium-webdriver');
 
-import { DEFAULT_TIMEOUT } from './whatsapp';
+const { DEFAULT_TIMEOUT } = require('./whatsapp');
 
-export default class Driver {
+class Driver {
 
     constructor(webdriver) {
         this.driver = webdriver;
@@ -27,3 +27,5 @@ export default class Driver {
         await this.driver.wait(async driver => condition.fn(driver), timeout);
     }
 }
+
+module.exports.Driver = Driver;

@@ -2,12 +2,12 @@
   "name": "whatsapp-selenium",
   "version": "1.0.0",
   "description": "Selenium wrapper for Whatsapp Web UI.",
-  "main": "lib/whatsapp.js",
+  "main": "src/whatsapp.js",
   "dependencies": {
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "files": [
-    "lib/"
+    "src/"
   ],
   "devDependencies": {
     "babel-cli": "^6.26.0",

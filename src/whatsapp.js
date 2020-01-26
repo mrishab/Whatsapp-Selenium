@@ -1,15 +1,15 @@
 'use strict'
 
-import { Key } from 'selenium-webdriver';
+const { Key } = require('selenium-webdriver');
 
-import { NAME_PLACEHOLDER } from './xpathConstants';
-import xpath from './xpathConstants';
-import Driver from './driver';
+const { NAME_PLACEHOLDER } = require('./xpathConstants');
+const { xpath } = require('./xpathConstants');
+const { Driver } = require('./driver');
 
-export const WHATSAPP_URL = "https://web.whatsapp.com/";
-export const DEFAULT_TIMEOUT = 5 * 1000; // 5 seconds
+const WHATSAPP_URL = "https://web.whatsapp.com/";
+const DEFAULT_TIMEOUT = 5 * 1000; // 5 seconds
 
-export default class Whatsapp {
+class Whatsapp {
 
     constructor(webdriver) {
         this.driver = new Driver(webdriver);
@@ -155,3 +155,7 @@ export default class Whatsapp {
 
     }
 }
+
+module.exports.DEFAULT_TIMEOUT = DEFAULT_TIMEOUT;
+module.exports.WHATSAPP_URL = WHATSAPP_URL;
+module.exports.Whatsapp = Whatsapp

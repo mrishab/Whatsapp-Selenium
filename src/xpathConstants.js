@@ -1,4 +1,4 @@
-export const NAME_PLACEHOLDER = 'NAME_OF_PERSON';
+const NAME_PLACEHOLDER = 'NAME_OF_PERSON';
 
 const LAST_MESSAGE = '(//div[contains(@class, "message-out")])[last()]';
 const MSG_TICK = '//span[contains(@data-icon, "check")]';
@@ -21,4 +21,5 @@ const xpath = {
     RETRY_DIALOG_BOX : "//div[contains(text(), 'Trying to reach phone')]",
 }
 
-export default xpath;
+module.exports.xpath = xpath;
+module.exports.NAME_PLACEHOLDER = NAME_PLACEHOLDER;
