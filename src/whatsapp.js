@@ -54,6 +54,14 @@ class Whatsapp {
         return this._findElement(XPATH.LAST_MESSAGE);
     }
 
+    get qrCode() {
+        return this._findElement(XPATH.QR_CODE);
+    }
+
+    get useHereButton() {
+        return this._findElement(XPATH.USE_HERE_BUTTON);
+    }
+
     async openPage() {
         await this.driver.get(WHATSAPP_URL);
     }
@@ -125,6 +133,31 @@ class Whatsapp {
         } catch (err) { }
 
         return requireRetry;
+    }
+
+    async isNeedLogin() {
+        let qrPresent = false;
+        try {
+            await this.qrCode;
+            qrPresent = true;
+        } catch (err) { }
+
+        return qrPresent
+    }
+
+    async isUseHere() {
+        let isUseHere = false;
+        try {
+            await this.useHereButton;
+            isUseHere = true;
+        } catch (err) { }
+
+        return isUseHere
+    }
+
+    async useHere() {
+        const useHere = await this.useHereButton;
+        await useHere.click();
     }
 
     _findElement(xpath) {

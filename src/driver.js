@@ -1,6 +1,6 @@
 const { By, until } = require('selenium-webdriver');
 
-const { DEFAULT_TIMEOUT } = require('./whatsapp');
+const DEFAULT_TIMEOUT = 5 * 1000; // 5 seconds
 
 class Driver {
 

@@ -52,6 +52,12 @@ describe("Whatsapp Spec", () => {
         el = await whatsapp.lastMessage;
         expect(el.xpath).toBe(XPATH.LAST_MESSAGE);
 
+        el = await whatsapp.qrCode;
+        expect(el.xpath).toBe(XPATH.QR_CODE);
+
+        el = await whatsapp.useHereButton;
+        expect(el.xpath).toBe(XPATH.USE_HERE_BUTTON);
+
         done();
     });
 
@@ -220,6 +226,67 @@ describe("Whatsapp Spec", () => {
         const b = await whatsapp.isRequireRetry();
 
         expect(b).toBe(false);
+        done();
+    });
+
+    it("isNeedLogin returns true when QR Code is present", async done => {
+        const el = WebElement(XPATH.QR_CODE);
+        spyOn(mDriver, 'getElement').and.callFake(xpath => Promise.resolve(xpath === XPATH.QR_CODE ? el : {}));
+
+        const b = await whatsapp.isNeedLogin();
+
+        expect(b).toBe(true);
+        done();
+    });
+
+    it("isNeedLogin returns false when QR Code is not present", async done => {
+        spyOn(mDriver, 'getElement').and.callFake(xpath => {
+            if (xpath === XPATH.QR_CODE) {
+                throw "NOT_FOUND";
+            }
+
+            return Promise.resolve({});
+        });
+
+        const b = await whatsapp.isNeedLogin();
+
+        expect(b).toBe(false);
+        done();
+    });
+
+    it("isUseHere returns true when QR Code is present", async done => {
+        const el = WebElement(XPATH.QR_CODE);
+        spyOn(mDriver, 'getElement').and.callFake(xpath => Promise.resolve(xpath === XPATH.USE_HERE_BUTTON ? el : {}));
+
+        const b = await whatsapp.isUseHere();
+
+        expect(b).toBe(true);
+        done();
+    });
+
+    it("isUseHere returns false when QR Code is not present", async done => {
+        spyOn(mDriver, 'getElement').and.callFake(xpath => {
+            if (xpath === XPATH.USE_HERE_BUTTON) {
+                throw "NOT_FOUND";
+            }
+
+            return Promise.resolve({});
+        });
+
+        const b = await whatsapp.isUseHere();
+
+        expect(b).toBe(false);
+        done();
+    });
+
+    it("useHere clicks on the 'Use Here' button", async done => {
+        const el = WebElement(XPATH.USE_HERE_BUTTON);
+        spyOn(mDriver, 'getElement').and.callFake(xpath => Promise.resolve(xpath === XPATH.USE_HERE_BUTTON ? el : {}));
+
+        await whatsapp.useHere();
+
+        expect(el.getClicks()).toBe(1);
+
         done();
     });
 
