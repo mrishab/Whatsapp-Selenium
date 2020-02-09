@@ -2,13 +2,12 @@
 
 const { Key } = require('selenium-webdriver');
 
-const { Whatsapp } = require("./whatsapp");
 const { pause } = require("./util");
 
 class WhatsappAction {
 
     constructor(whatsapp) {
-        this.whatsapp = this.whatsapp = whatsapp;
+        this.whatsapp = whatsapp;
     }
 
     async init() {
