@@ -2,13 +2,16 @@
   "name": "whatsapp-selenium",
   "version": "1.0.0",
   "description": "Selenium wrapper for Whatsapp Web UI.",
-  "main": "src/whatsappAction.js",
+  "main": "index.js",
   "peerDependencies": {
     "selenium-webdriver": "^4.0.0-alpha.1"
   },
   "files": [
     "src/"
   ],
+  "publishConfig": {
+    "registry": "http://192.168.68.131:8081/repository/npm-private/"
+  },
   "devDependencies": {
     "jasmine": "^3.5.0"
   },
