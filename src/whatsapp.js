@@ -1,6 +1,7 @@
 'use strict'
 
 const { XPATH, NAME_PLACEHOLDER } = require('./constants');
+const {pause} = require("./util");
 
 const WHATSAPP_URL = "https://web.whatsapp.com/";
 
@@ -74,6 +75,8 @@ class Whatsapp {
 
     async openChatWith(name) {
         await this.performContactSearchFor(name);
+
+        await pause(500);
 
         const chat = await this.findChatElementFor(name);
         await chat.click();
