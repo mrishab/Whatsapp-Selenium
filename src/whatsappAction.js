@@ -55,11 +55,30 @@ class WhatsappAction {
     }
 
     async sendMessageTo(name, message) {
+        await this.whatsapp.openChatWith(name);
+        await this.whatsapp.typeMessage(message);
+        await this.whatsapp.typeMessage(Key.ENTER);
+        const success = await this.whatsapp.isLastMessageSent();
 
+        if (!success) {
+            throw new Error(`Failed to load image for name: ${name}; message: ${message}`);
+        }
     }
 
     async sendImageTo(name, path, caption) {
+        await this.whatsapp.openChatWith(name);
+        await this.whatsapp.uploadImage(path);
+        await this.whatsapp.typeImageCaption(caption);
+        await this.whatsapp.typeMessage(Key.ENTER);
 
+        let success = false;
+        for (let attempt = 0; attempt < 5 && !success; attempt++) {
+            success = await this.whatsapp.isLastMessageSent();
+        }
+
+        if (!success) {
+            throw new Error(`Failed to load image for name: ${name}; path: ${path}; caption: ${caption}`);
+        }
     }
 
     async paste() {

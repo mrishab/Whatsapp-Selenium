@@ -1,5 +1,6 @@
 const { WhatsappAction } = require("../src/whatsappAction");
 const { Whatsapp } = require("../src/whatsapp");
+const { Key } = require("selenium-webdriver");
 
 describe("WhatsappSpec", () => {
 
@@ -92,6 +93,172 @@ describe("WhatsappSpec", () => {
 
         done();
     });
-    
 
+    it("sendImageTo opensChat, uploads an image, types caption and make 5 attempts for doubleticks on the last message", async done => {
+        let chatOpen = false;
+        spyOn(mWhatsapp, 'openChatWith').and.callFake(name => new Promise(res => {
+            expect(name).toBe("person_1");
+            chatOpen = true;
+            res();
+        }));
+
+        let uploaded = false;
+        spyOn(mWhatsapp, 'uploadImage').and.callFake(file => new Promise(res => {
+            expect(chatOpen).toBeTrue();
+            expect(file).toBe("/path/to/image");
+            uploaded = true;
+            res();
+        }));
+
+        let typed = false;
+        spyOn(mWhatsapp, 'typeImageCaption').and.callFake(caption => new Promise(res => {
+            expect(uploaded).toBe(true);
+            expect(caption).toBe("IMAGE_CAPTION");
+            typed = true;
+            res();
+        }));
+
+        let sent = false;
+        spyOn(mWhatsapp, 'typeMessage').and.callFake(message => new Promise(res => {
+            expect(typed).toBeTrue();
+            expect(message).toEqual(Key.ENTER);
+            sent = true;
+
+            res();
+        }));
+
+        let attempt = 0;
+        spyOn(mWhatsapp, 'isLastMessageSent').and.callFake(() => new Promise(res => {
+            expect(chatOpen).toBeTrue();
+            expect(uploaded).toBeTrue();
+            expect(typed).toBeTrue();
+            expect(sent).toBeTrue();
+
+            res(attempt++ === 4); // true on fifth attempt
+        }));
+
+        await action.sendImageTo("person_1", "/path/to/image", "IMAGE_CAPTION");
+
+        expect(mWhatsapp.openChatWith).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.uploadImage).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.typeImageCaption).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(5);
+
+        done();
+    });
+
+    it("sendImageTo opensChat, uploads an image, types caption and throws error when double ticks don't appear", async done => {
+        let chatOpen = false;
+        spyOn(mWhatsapp, 'openChatWith').and.callFake(name => new Promise(res => {
+            expect(name).toBe("person_1");
+            chatOpen = true;
+            res();
+        }));
+
+        let uploaded = false;
+        spyOn(mWhatsapp, 'uploadImage').and.callFake(file => new Promise(res => {
+            expect(chatOpen).toBeTrue();
+            expect(file).toBe("/path/to/image");
+            uploaded = true;
+            res();
+        }));
+
+        let typed = false;
+        spyOn(mWhatsapp, 'typeImageCaption').and.callFake(caption => new Promise(res => {
+            expect(uploaded).toBe(true);
+            expect(caption).toBe("IMAGE_CAPTION");
+            typed = true;
+            res();
+        }));
+
+        let sent = false;
+        spyOn(mWhatsapp, 'typeMessage').and.callFake(message => new Promise(res => {
+            expect(typed).toBeTrue();
+            expect(message).toEqual(Key.ENTER);
+            sent = true;
+
+            res();
+        }));
+
+        spyOn(mWhatsapp, 'isLastMessageSent').and.callFake(() => new Promise(res => {
+            expect(chatOpen).toBeTrue();
+            expect(uploaded).toBeTrue();
+            expect(typed).toBeTrue();
+            expect(sent).toBeTrue();
+
+            res(false);
+        }));
+
+        await expectAsync(action.sendImageTo("person_1", "/path/to/image", "IMAGE_CAPTION"))
+            .toBeRejectedWithError("Failed to load image for name: person_1; path: /path/to/image; caption: IMAGE_CAPTION");
+
+        expect(mWhatsapp.openChatWith).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.uploadImage).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.typeImageCaption).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(5);
+
+        done();
+    });
+
+    it("sendMessageTo opensChat, types message and makes 1 attempt for doubleticks on the last message", async done => {
+        let chatOpen = false;
+        spyOn(mWhatsapp, 'openChatWith').and.callFake(name => new Promise(res => {
+            expect(name).toBe("person_1");
+            chatOpen = true;
+            res();
+        }));
+
+        let typed = "";
+        spyOn(mWhatsapp, 'typeMessage').and.callFake(message => new Promise(res => {
+            expect(chatOpen).toBe(true);
+            typed += message;
+            res();
+        }));
+
+        spyOn(mWhatsapp, 'isLastMessageSent').and.callFake(() => new Promise(res => {
+            expect(chatOpen).toBeTrue();
+            expect(typed).toBe("MESSAGE" + Key.ENTER);
+
+            res(true);
+        }));
+
+        await action.sendMessageTo("person_1", "MESSAGE");
+
+        expect(mWhatsapp.openChatWith).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.typeMessage).toHaveBeenCalledTimes(2);
+        expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(1);
+
+        done();
+    });
+
+    it("sendMessageTo opensChat, types message and throws error when doubleticks not found on the last message", async done => {
+        let chatOpen = false;
+        spyOn(mWhatsapp, 'openChatWith').and.callFake(name => new Promise(res => {
+            expect(name).toBe("person_1");
+            chatOpen = true;
+            res();
+        }));
+
+        let typed = "";
+        spyOn(mWhatsapp, 'typeMessage').and.callFake(message => new Promise(res => {
+            expect(chatOpen).toBe(true);
+            typed += message;
+            res();
+        }));
+
+        spyOn(mWhatsapp, 'isLastMessageSent').and.callFake(() => new Promise(res => {
+            expect(chatOpen).toBeTrue();
+            expect(typed).toBe("MESSAGE" + Key.ENTER);
+
+            res(false);
+        }));
+
+        await expectAsync(action.sendMessageTo("person_1", "MESSAGE")).toBeRejectedWithError("Failed to load image for name: person_1; message: MESSAGE");
+
+        expect(mWhatsapp.openChatWith).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.typeMessage).toHaveBeenCalledTimes(2);
+        expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(1);
+
+        done();
+    });
 });
