@@ -110,20 +110,10 @@ describe("WhatsappSpec", () => {
             res();
         }));
 
-        let typed = false;
+        let typed = "";
         spyOn(mWhatsapp, 'typeImageCaption').and.callFake(caption => new Promise(res => {
             expect(uploaded).toBe(true);
-            expect(caption).toBe("IMAGE_CAPTION");
-            typed = true;
-            res();
-        }));
-
-        let sent = false;
-        spyOn(mWhatsapp, 'typeMessage').and.callFake(message => new Promise(res => {
-            expect(typed).toBeTrue();
-            expect(message).toEqual(Key.ENTER);
-            sent = true;
-
+            typed += caption;
             res();
         }));
 
@@ -131,8 +121,7 @@ describe("WhatsappSpec", () => {
         spyOn(mWhatsapp, 'isLastMessageSent').and.callFake(() => new Promise(res => {
             expect(chatOpen).toBeTrue();
             expect(uploaded).toBeTrue();
-            expect(typed).toBeTrue();
-            expect(sent).toBeTrue();
+            expect(typed).toEqual("IMAGE_CAPTION" + Key.ENTER);
 
             res(attempt++ === 4); // true on fifth attempt
         }));
@@ -141,7 +130,7 @@ describe("WhatsappSpec", () => {
 
         expect(mWhatsapp.openChatWith).toHaveBeenCalledTimes(1);
         expect(mWhatsapp.uploadImage).toHaveBeenCalledTimes(1);
-        expect(mWhatsapp.typeImageCaption).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.typeImageCaption).toHaveBeenCalledTimes(2);
         expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(5);
 
         done();
@@ -163,28 +152,17 @@ describe("WhatsappSpec", () => {
             res();
         }));
 
-        let typed = false;
+        let typed = "";
         spyOn(mWhatsapp, 'typeImageCaption').and.callFake(caption => new Promise(res => {
             expect(uploaded).toBe(true);
-            expect(caption).toBe("IMAGE_CAPTION");
-            typed = true;
-            res();
-        }));
-
-        let sent = false;
-        spyOn(mWhatsapp, 'typeMessage').and.callFake(message => new Promise(res => {
-            expect(typed).toBeTrue();
-            expect(message).toEqual(Key.ENTER);
-            sent = true;
-
+            typed += caption;
             res();
         }));
 
         spyOn(mWhatsapp, 'isLastMessageSent').and.callFake(() => new Promise(res => {
             expect(chatOpen).toBeTrue();
             expect(uploaded).toBeTrue();
-            expect(typed).toBeTrue();
-            expect(sent).toBeTrue();
+            expect(typed).toEqual("IMAGE_CAPTION" + Key.ENTER);
 
             res(false);
         }));
@@ -194,7 +172,7 @@ describe("WhatsappSpec", () => {
 
         expect(mWhatsapp.openChatWith).toHaveBeenCalledTimes(1);
         expect(mWhatsapp.uploadImage).toHaveBeenCalledTimes(1);
-        expect(mWhatsapp.typeImageCaption).toHaveBeenCalledTimes(1);
+        expect(mWhatsapp.typeImageCaption).toHaveBeenCalledTimes(2);
         expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(5);
 
         done();

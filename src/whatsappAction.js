@@ -69,7 +69,7 @@ class WhatsappAction {
         await this.whatsapp.openChatWith(name);
         await this.whatsapp.uploadImage(path);
         await this.whatsapp.typeImageCaption(caption);
-        await this.whatsapp.typeMessage(Key.ENTER);
+        await this.whatsapp.typeImageCaption(Key.ENTER);
 
         let success = false;
         for (let attempt = 0; attempt < 5 && !success; attempt++) {
