@@ -1,8 +1,9 @@
 'use strict'
 
 const { Key } = require('selenium-webdriver');
-
 const { pause } = require("./util");
+
+const { performance } = require("perf_hooks");
 
 class WhatsappAction {
 
@@ -17,15 +18,15 @@ class WhatsappAction {
 
     async waitToLoad() {
         const timeout = 60 * 1000; // 1 minute
-        let now = new Date().getMilliseconds();
+
+        let now = performance.now();
         const end = now + timeout;
 
         let isLoading;
-        do {
+        for (isLoading = true; now < end && isLoading; now = performance.now()) {
             isLoading = await this.whatsapp.isLoading();
             await pause(2000);
-            now = new Date().getMilliseconds();
-        } while (now < end && isLoading);
+        }
 
         if (isLoading && now >= end) {
             throw new Error("Timed out while loading");
