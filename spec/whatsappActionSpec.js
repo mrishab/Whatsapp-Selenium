@@ -42,7 +42,7 @@ describe("WhatsappSpec", () => {
         await expectAsync(action.waitToLoad()).toBeRejectedWithError(Error, "Timed out while loading");
 
         done();
-    }, 65000);
+    }, 65 * 1000);
 
     it("waitToLoad gets 'cannot reach phone' and throws error", async done => {
         spyOn(mWhatsapp, 'isLoading').and.returnValue(Promise.resolve(false));
