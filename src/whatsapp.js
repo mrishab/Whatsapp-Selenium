@@ -1,7 +1,7 @@
 'use strict'
 
 const { XPATH, NAME_PLACEHOLDER } = require('./constants');
-const {pause} = require("./util");
+const { pause } = require("./util");
 
 const WHATSAPP_URL = "https://web.whatsapp.com/";
 
@@ -64,7 +64,11 @@ class Whatsapp {
     }
 
     async openPage() {
-        await this.driver.get(WHATSAPP_URL);
+        try {
+            await this.driver.get(WHATSAPP_URL);
+        } catch (err) {
+            console.error("Error while trying to load page", err);
+        }
     }
 
     async findChatElementFor(name) {
@@ -168,4 +172,7 @@ class Whatsapp {
     }
 }
 
-module.exports.Whatsapp = Whatsapp;
+module.exports = {
+    WHATSAPP_URL,
+    Whatsapp
+}

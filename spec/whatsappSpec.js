@@ -1,4 +1,4 @@
-const { Whatsapp } = require("../src/whatsapp");
+const { Whatsapp, WHATSAPP_URL } = require("../src/whatsapp");
 const { Driver } = require("../src/driver");
 const { XPATH } = require("../src/constants");
 
@@ -62,12 +62,28 @@ describe("Whatsapp Spec", () => {
     });
 
     it("openPage calls the driver.get method with the URL", async done => {
-        spyOn(mDriver, 'get').and.callFake(url => Promise.resolve());
+        let isOpen = false;
+        spyOn(mDriver, 'get').and.callFake(url => {
+            expect(url).toBe(WHATSAPP_URL);
+            isOpen = true;
+
+            return Promise.resolve();
+        });
 
         await whatsapp.openPage();
 
-        expect(mDriver.get).toHaveBeenCalledWith("https://web.whatsapp.com/");
+        expect(isOpen).toBeTrue();
 
+        done();
+    });
+
+    it("openPage calls the driver.get method with the URL", async done => {
+        spyOn(mDriver, 'get').and.callFake(url => {
+            expect(url).toBe(WHATSAPP_URL);
+            return new Promise((res, rej) => rej());
+        });
+
+        await whatsapp.openPage();
         done();
     });
 
@@ -86,7 +102,7 @@ describe("Whatsapp Spec", () => {
 
         spyOn(whatsapp, 'performContactSearchFor').and.callFake(name => {
             expect(name).toBe("person_1");
-            Promise.resolve();
+            return Promise.resolve();
         });
         spyOn(whatsapp, 'findChatElementFor').and.callFake(name => Promise.resolve(name == "person_1" ? el : null));
 
