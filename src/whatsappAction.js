@@ -36,7 +36,7 @@ class WhatsappAction {
         if (isRetry) {
             throw new Error("Cannot reach the phone");
         }
-       
+
         const isUseHere = await this.whatsapp.isUseHere();
         if (isUseHere) {
             await this.whatsapp.useHere();

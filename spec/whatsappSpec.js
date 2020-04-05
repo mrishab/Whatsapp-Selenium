@@ -183,7 +183,7 @@ describe("Whatsapp Spec", () => {
     it("isLastMessageSent returns false when double ticks on last message element is not located", async done => {
         spyOn(mDriver, 'getElement').and.callFake(xpath => {
             if (xpath === XPATH.LAST_MESSAGE_DOUBLE_TICK) {
-                throw "NOT_FOUND";
+                throw new Error("Not Found");
             }
 
             return Promise.resolve({});
@@ -208,7 +208,7 @@ describe("Whatsapp Spec", () => {
     it("isLoading returns false when the loader progress bar is not present", async done => {
         spyOn(mDriver, 'getElement').and.callFake(xpath => {
             if (xpath === XPATH.LOADER_PROGRESS) {
-                throw "NOT_FOUND";
+                throw new Error("Not Found");
             }
 
             return Promise.resolve({});
@@ -233,7 +233,7 @@ describe("Whatsapp Spec", () => {
     it("isRequireRetry returns false when the retry window is not present", async done => {
         spyOn(mDriver, 'getElement').and.callFake(xpath => {
             if (xpath === XPATH.RETRY_DIALOG_BOX) {
-                throw "NOT_FOUND";
+                throw new Error("Not Found");
             }
 
             return Promise.resolve({});
@@ -258,7 +258,7 @@ describe("Whatsapp Spec", () => {
     it("isNeedLogin returns false when QR Code is not present", async done => {
         spyOn(mDriver, 'getElement').and.callFake(xpath => {
             if (xpath === XPATH.QR_CODE) {
-                throw "NOT_FOUND";
+                throw new Error("Not Found");
             }
 
             return Promise.resolve({});
@@ -283,7 +283,7 @@ describe("Whatsapp Spec", () => {
     it("isUseHere returns false when QR Code is not present", async done => {
         spyOn(mDriver, 'getElement').and.callFake(xpath => {
             if (xpath === XPATH.USE_HERE_BUTTON) {
-                throw "NOT_FOUND";
+                throw new Error("Not Found");
             }
 
             return Promise.resolve({});
