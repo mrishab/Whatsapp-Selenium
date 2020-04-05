@@ -81,11 +81,6 @@ class WhatsappAction {
             throw new Error(`Failed to load image for name: ${name}; path: ${path}; caption: ${caption}`);
         }
     }
-
-    async paste() {
-        const keys = Key.chord(Key.CONTROL, "v");
-        await this.page.typeMessage(keys);
-    }
 }
 
 module.exports.WhatsappAction = WhatsappAction;
