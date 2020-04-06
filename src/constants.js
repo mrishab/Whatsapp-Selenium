@@ -11,7 +11,7 @@ const XPATH = {
     GALLERY_BUTTON : '//input[@accept="image/*,video/mp4,video/3gpp,video/quicktime"]',
     IMAGE_CAPTION_INPUT : '//span[contains(text(), "Add a caption…")]/following-sibling::div//div[contains(@class, "copyable-text") and contains(@class, "selectable-text")]',
     NEW_CHAT_BUTTON : '//div[@title="New chat"]/../..',
-    CONTACT_SEARCH_INPUT : '//input[@title="Search contacts"]',
+    CONTACT_SEARCH_INPUT : '//*[text()="Search contacts"]/../label//*[@contenteditable="true"]',
     LAST_MESSAGE : LAST_MESSAGE,
     MSG_TICK : MSG_TICK,
     LAST_MESSAGE_DOUBLE_TICK : LAST_MESSAGE + MSG_TICK,

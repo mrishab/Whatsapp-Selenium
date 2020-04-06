@@ -134,7 +134,7 @@ describe("WhatsappSpec", () => {
         expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(5);
 
         done();
-    });
+    }, 15000);
 
     it("sendImageTo opensChat, uploads an image, types caption and throws error when double ticks don't appear", async done => {
         let chatOpen = false;
@@ -176,7 +176,7 @@ describe("WhatsappSpec", () => {
         expect(mWhatsapp.isLastMessageSent).toHaveBeenCalledTimes(5);
 
         done();
-    });
+    }, 15000);
 
     it("sendMessageTo opensChat, types message and makes 1 attempt for doubleticks on the last message", async done => {
         let chatOpen = false;

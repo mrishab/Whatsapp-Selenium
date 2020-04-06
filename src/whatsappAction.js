@@ -72,9 +72,14 @@ class WhatsappAction {
         await this.whatsapp.typeImageCaption(caption);
         await this.whatsapp.typeImageCaption(Key.ENTER);
 
+        // Waiting for the preview dialogue to animate onto the screen
+        await pause(1000);
+
         let success = false;
+        // Maximum waiting time is 5 * 2 = 10 seconds.
         for (let attempt = 0; attempt < 5 && !success; attempt++) {
             success = await this.whatsapp.isLastMessageSent();
+            await pause(2000);
         }
 
         if (!success) {
