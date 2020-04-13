@@ -10,7 +10,7 @@
     "src/"
   ],
   "publishConfig": {
-    "registry": "http://192.168.68.131:8081/repository/npm-private/"
+    "registry": "http://anton:8081/repository/npm-private/"
   },
   "devDependencies": {
     "jasmine": "^3.5.0"
